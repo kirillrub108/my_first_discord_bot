@@ -1,2 +1,8 @@
 # my_first_discord_bot
-bot can play music etc.
+it should look like this
+
+settings = {
+    'token': 'token',
+    'bot': 'bot name',
+    'id': bot id
+}
