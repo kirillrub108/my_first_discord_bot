@@ -9,7 +9,6 @@ from cogs.roflcog import RoflCog
 from cogs.eventcog import EventCog
 from config import settings
 
-
 load_dotenv()
 intents = discord.Intents.all()  # or .all() if you ticked all, that is easier
 intents.members = True  # If you ticked the SERVER MEMBERS INTENT
@@ -33,9 +32,7 @@ async def on_ready():
     await bot.add_cog(EventCog(bot))
 
 
-
 # ----------------------------------------------------------------music----------------------------------------------------------------------------------------------------
-
 
 
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -49,18 +46,21 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
+    'source_address': '0.0.0.0'  # bind to ipv4 since ipv6 addresses cause issues sometimes
 }
 ffmpeg_options = {
     'options': '-vn'
 }
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
+
 class YTDLSource(discord.PCMVolumeTransformer):
     def __init__(self, source, *, data, volume=0.5):
         super().__init__(source, volume)
         self.data = data
         self.title = data.get('title')
         self.url = ""
+
     @classmethod
     async def from_url(cls, url, *, loop=None, stream=False):
         loop = loop or asyncio.get_event_loop()
@@ -98,6 +98,12 @@ async def play(ctx, url):
         filename = await YTDLSource.from_url('https://youtu.be/-UFkpgwtJF0', loop=bot.loop)
         voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
         await ctx.send('https://youtu.be/-UFkpgwtJF0')
+    if 'dota_twinky' in url:
+        server = ctx.message.guild
+        voice_channel = server.voice_client
+        filename = await YTDLSource.from_url('https://youtu.be/DUuQj0JTM4o', loop=bot.loop)
+        voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
+        await ctx.send('https://youtu.be/DUuQj0JTM4o')
     else:
         server = ctx.message.guild
         voice_channel = server.voice_client
@@ -105,6 +111,7 @@ async def play(ctx, url):
         voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source=filename))
         # async with ctx.typing():
         # await ctx.send('**Now playing:** {}'.format(filename))
+
 
 @bot.command(name='pause', help='This command pauses the song')
 async def pause(ctx):
@@ -136,25 +143,22 @@ async def stop(ctx):
         await ctx.send("The bot is not connected to a voice channel.")
 
 
+# @bot.command(name='skip', help='Skips the song')
+# async def skip(ctx):
+# voice_client = ctx.message.guild.voice_client
+# if voice_client.is_playing():
+# links.pop(0)
+# queue.pop(0)
+# await voice_client.stop()
+# try:
+# server = ctx.message.guild
+# voice_channel = server.voice_client
+# voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source='{0}'.format(queue[0])))
+# except:
+# pass
 
-#@bot.command(name='skip', help='Skips the song')
-#async def skip(ctx):
-    #voice_client = ctx.message.guild.voice_client
-    #if voice_client.is_playing():
-        #links.pop(0)
-        #queue.pop(0)
-        #await voice_client.stop()
-    #try:
-        #server = ctx.message.guild
-        #voice_channel = server.voice_client
-        #voice_channel.play(discord.FFmpegPCMAudio(executable="ffmpeg.exe", source='{0}'.format(queue[0])))
-    #except:
-        #pass
-
-    #else:
-        #await ctx.send("The bot is not playing anything at the moment.")
-
-
+# else:
+# await ctx.send("The bot is not playing anything at the moment.")
 
 
 bot.help_command = PrettyHelp()
